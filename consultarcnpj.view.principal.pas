@@ -5,7 +5,8 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, System.JSON, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, IPPeerClient, Vcl.StdCtrls, REST.Client, REST.Types,
-  Data.Bind.Components, Data.Bind.ObjectScope, Vcl.ComCtrls, Vcl.ExtCtrls, acPNG;
+  Data.Bind.Components, Data.Bind.ObjectScope, Vcl.ComCtrls, Vcl.ExtCtrls, acPNG, ShellAPI,
+  Vcl.Menus;
 
 type
   TviewPrincipal = class(TForm)
@@ -62,10 +63,27 @@ type
     Label5: TLabel;
     mmAtSecundaria: TMemo;
     Button1: TButton;
+    MainMenu1: TMainMenu;
+    S1: TMenuItem;
+    I1: TMenuItem;
+    pnlSobre: TPanel;
+    Button2: TButton;
+    LinkLabel1: TLinkLabel;
+    Image5: TImage;
+    Image4: TImage;
+    Label3: TLabel;
+    Label6: TLabel;
+    Label7: TLabel;
+    Label8: TLabel;
+    lkMeuGit: TLinkLabel;
     procedure btConsultarCnpjClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure edtCnpjKeyPress(Sender: TObject; var Key: Char);
+    procedure I1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
+    procedure lkMeuGitLinkClick(Sender: TObject; const Link: string;
+      LinkType: TSysLinkType);
   private
     { Private declarations }
   public
@@ -95,6 +113,11 @@ begin
     begin
       MessageDlg('Para consultar é necessário inserir um CNPJ!',mtWarning, [mbOK],0);
       abort
+    end;
+
+    if cSituacao.Caption <> 'ATIVA' then
+    begin
+      Csituacao.Font.Color := clRed;
     end;
 
   LCNPJ := trim(edtCnpj.text);
@@ -208,6 +231,11 @@ begin
 
 end;
 
+procedure TviewPrincipal.Button2Click(Sender: TObject);
+begin
+pnlSobre.Visible := false;
+end;
+
 procedure TviewPrincipal.edtCnpjKeyPress(Sender: TObject; var Key: Char);
 begin
   edtCnpj.MaxLength := 14;
@@ -218,7 +246,7 @@ begin
     Exit;
   end;
 
-  if not (Key in ['0'..'9', #8, #22]) then
+  if not (Key in ['0'..'9', #8]) then
   begin
     MessageDlg('Apenas números são permitidos!',mtWarning, [mbOK],0);
     Key := #0;
@@ -229,6 +257,19 @@ procedure TviewPrincipal.FormShow(Sender: TObject);
 begin
 pnlConsulta.Visible := true;
 pnlDadosEmpresa.Visible := False;
+pnlSobre.Visible := false;
+lkMeuGit.Caption:='<a href="https://github.com/WolffAlc">Acesse aqui o meu GitHub!</a>';
+end;
+
+procedure TviewPrincipal.I1Click(Sender: TObject);
+begin
+ pnlSobre.Visible := true;
+end;
+
+procedure TviewPrincipal.lkMeuGitLinkClick(Sender: TObject; const Link: string;
+  LinkType: TSysLinkType);
+begin
+    ShellExecute(0, nil, PChar(Link), nil, nil, 1);
 end;
 
 end.
