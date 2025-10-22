@@ -76,6 +76,7 @@ type
     Label7: TLabel;
     Label8: TLabel;
     lkMeuGit: TLinkLabel;
+    Image6: TImage;
     procedure btConsultarCnpjClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure Button1Click(Sender: TObject);
