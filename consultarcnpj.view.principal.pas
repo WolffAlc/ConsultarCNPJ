@@ -77,6 +77,7 @@ type
     Label8: TLabel;
     lkMeuGit: TLinkLabel;
     Image6: TImage;
+    S2: TMenuItem;
     procedure btConsultarCnpjClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure Button1Click(Sender: TObject);
@@ -85,6 +86,7 @@ type
     procedure Button2Click(Sender: TObject);
     procedure lkMeuGitLinkClick(Sender: TObject; const Link: string;
       LinkType: TSysLinkType);
+    procedure S2Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -110,19 +112,20 @@ var
   LJSONValue : TJSONValue;
 
 begin
-    if edtCnpj.Text = '' then
+  if edtCnpj.Text = '' then
     begin
       MessageDlg('Para consultar é necessário inserir um CNPJ!',mtWarning, [mbOK],0);
       abort
     end;
 
-    if cSituacao.Caption <> 'ATIVA' then
+  if cSituacao.Caption <> 'ATIVA' then
     begin
       Csituacao.Font.Color := clRed;
     end;
 
   LCNPJ := trim(edtCnpj.text);
-    restclient1.baseURL := format(_URL_CONSULTA_CNPJ, [LCNPJ]);
+
+  restclient1.baseURL := format(_URL_CONSULTA_CNPJ, [LCNPJ]);
 
   restrequest1.Method := rmGET;
   restrequest1.Execute;
@@ -166,7 +169,7 @@ begin
    LJSONArr := LJSONObj.Values['qsa'] as TJSONArray;
 
 
-    if LJSONArr.Count > 0 then
+  if LJSONArr.Count > 0 then
     begin
        LObj := LJSONArr.Items[0] as TJSONObject;
        edtResponsavel.text :=
@@ -179,32 +182,32 @@ begin
     mmAtPrincipal.Lines.Clear;
 
   for LJSONValue in LJSONArr do
-  begin
-    LObj := LJSONValue as TJSONObject;
-    mmAtPrincipal.Lines.Add(
-        Format('%s (%s)', [
-         (LJSONValue As TJSONObject).Values['code'].value,
-         (LJSONValue As TJSONObject).Values['text'].value
-        ]
-      )
-   );
-  end;
+    begin
+      LObj := LJSONValue as TJSONObject;
+      mmAtPrincipal.Lines.Add(
+          Format('%s (%s)', [
+           (LJSONValue As TJSONObject).Values['code'].value,
+           (LJSONValue As TJSONObject).Values['text'].value
+          ]
+        )
+     );
+    end;
 
   LJSONArr := LJSONObj.Values['atividades_secundarias'] as TJSONArray;
 
     mmAtSecundaria.Lines.Clear;
 
   for LJSONValue in LJSONArr do
-  begin
-    LObj := LJSONValue as TJSONObject;
-    mmAtSecundaria.Lines.Add(
-        Format('%s (%s)', [
-         (LJSONValue As TJSONObject).Values['code'].value,
-         (LJSONValue As TJSONObject).Values['text'].value
-        ]
-      )
-   );
-  end;
+    begin
+      LObj := LJSONValue as TJSONObject;
+      mmAtSecundaria.Lines.Add(
+          Format('%s (%s)', [
+           (LJSONValue As TJSONObject).Values['code'].value,
+           (LJSONValue As TJSONObject).Values['text'].value
+          ]
+        )
+     );
+    end;
 
   pnlConsulta.Visible := False;
   pnlDadosEmpresa.Visible := true;
@@ -213,64 +216,68 @@ end;
 
 procedure TviewPrincipal.Button1Click(Sender: TObject);
 begin
- pnlConsulta.Visible := true;
- pnlDadosEmpresa.Visible := False;
- edtCnpj.Text := '';
- edtData.Text := '';
- edtNome.Text := '';
- edtNomeFantasia.Text := '';
- edtNatJuridica.Text := '' ;
- edtRua.Text := '';
- edtNumRua.Text := '';
- edtBairro.text := '' ;
- edtCep.Text := '';
- edtUf.Text := '' ;
- edtEmail.Text := '';
- edtTelefone.Text := '';
- edtCidade.Text := '' ;
-
-
+   pnlConsulta.Visible := true;
+   pnlDadosEmpresa.Visible := False;
+   edtCnpj.Text := '';
+   edtData.Text := '';
+   edtNome.Text := '';
+   edtNomeFantasia.Text := '';
+   edtNatJuridica.Text := '' ;
+   edtRua.Text := '';
+   edtNumRua.Text := '';
+   edtBairro.text := '' ;
+   edtCep.Text := '';
+   edtUf.Text := '' ;
+   edtEmail.Text := '';
+   edtTelefone.Text := '';
+   edtCidade.Text := '' ;
 end;
 
 procedure TviewPrincipal.Button2Click(Sender: TObject);
 begin
-pnlSobre.Visible := false;
+   pnlSobre.Visible := false;
 end;
 
 procedure TviewPrincipal.edtCnpjKeyPress(Sender: TObject; var Key: Char);
 begin
   edtCnpj.MaxLength := 14;
-    if Key = #13 then
-  begin
-    Key := #0;
-    btConsultarCnpjClick(Sender);
-    Exit;
-  end;
+  if Key = #13 then
+    begin
+      Key := #0;
+      btConsultarCnpjClick(Sender);
+      Exit;
+    end;
 
-  if not (Key in ['0'..'9', #8]) then
-  begin
-    MessageDlg('Apenas números são permitidos!',mtWarning, [mbOK],0);
-    Key := #0;
-  end;
+  if not (Key in ['0'..'9', #8, #22]) then
+    begin
+      MessageDlg('Apenas números são permitidos!',mtWarning, [mbOK],0);
+      Key := #0;
+    end;
 end;
 
 procedure TviewPrincipal.FormShow(Sender: TObject);
 begin
-pnlConsulta.Visible := true;
-pnlDadosEmpresa.Visible := False;
-pnlSobre.Visible := false;
-lkMeuGit.Caption:='<a href="https://github.com/WolffAlc">Acesse aqui o meu GitHub!</a>';
+  pnlConsulta.Visible := true;
+  pnlDadosEmpresa.Visible := False;
+  pnlSobre.Visible := false;
+
+  lkMeuGit.Caption:='<a href="https://github.com/WolffAlc">Acesse aqui o meu GitHub!</a>';
 end;
 
 procedure TviewPrincipal.I1Click(Sender: TObject);
 begin
- pnlSobre.Visible := true;
+  pnlSobre.Visible := true;
 end;
 
 procedure TviewPrincipal.lkMeuGitLinkClick(Sender: TObject; const Link: string;
   LinkType: TSysLinkType);
 begin
-    ShellExecute(0, nil, PChar(Link), nil, nil, 1);
+  ShellExecute(0, nil, PChar(Link), nil, nil, 1);
+end;
+
+procedure TviewPrincipal.S2Click(Sender: TObject);
+begin
+ Application.Terminate;
 end;
 
 end.
